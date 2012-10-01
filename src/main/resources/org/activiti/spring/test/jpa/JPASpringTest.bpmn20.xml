@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskAssigneeExample"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
+
+	<process id="LoanRequestProcess" name="Process creating and handling loan request">
+		<startEvent id="theStart" />
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="approveTask" />
+
+		<userTask id="approveTask" name="Approve request">
+			<potentialOwner>
+				<resourceAssignmentExpression>
+					<formalExpression>manager</formalExpression>
+				</resourceAssignmentExpression>
+			</potentialOwner>
+		</userTask>
+		
+		<sequenceFlow id="flow3" sourceRef="approveTask"
+			targetRef="theEnd" />
+
+		<endEvent id="theEnd" />
+	</process>
+
+</definitions>

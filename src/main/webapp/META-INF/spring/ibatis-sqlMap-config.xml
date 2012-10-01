@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="GoSmarter">
+
+	<resultMap id="loanRequestResult" class="com.goSmarter.activiti.loanrequest.domain.LoanRequest">
+		<result property="id" column="id" />
+		<result property="processId" column="processId" />
+		<result property="customerName" column="customerName" />
+		<result property="amount" column="amount" />
+	</resultMap>
+
+	<select id="loanRequestCount" resultClass="java.lang.Integer">
+		SELECT count(ID) FROM LOANREQUEST
+	</select>
+
+	<select id="loanRequestList" resultMap="loanRequestResult">
+		SELECT * FROM LOANREQUEST
+	</select>
+	
+</sqlMap>

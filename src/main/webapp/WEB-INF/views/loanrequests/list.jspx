@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_org_springsource_roo_loanrequest_server_domain_LoanRequest" items="${loanrequests}" z="nBkKj8NwlhbkUdKfbKb/HK4EUCs=">
+        <table:table data="${loanrequests}" id="l_org_springsource_roo_loanrequest_server_domain_LoanRequest" path="/loanrequests" z="RXhlmRMtNhrrKCc4P7L3/b2GYys=">
+            <table:column id="c_org_springsource_roo_loanrequest_server_domain_LoanRequest_processId" property="processId" z="xza9Yj4odReVqqBHQ0vlTVmwv1g="/>
+            <table:column id="c_org_springsource_roo_loanrequest_server_domain_LoanRequest_customerName" property="customerName" z="GNeIv9iRqjbU8SDPUTaQvHTEpco="/>
+            <table:column id="c_org_springsource_roo_loanrequest_server_domain_LoanRequest_amount" property="amount" z="0bnxFiKOVo1UKnL+8nmO8MN6yzk="/>
+        </table:table>
+    </page:list>
+</div>

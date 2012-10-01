@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_org_springsource_roo_loanrequest_server_domain_LoanRequest" object="${loanrequest}" path="/loanrequests" z="5T1oDkOP3KcR+pcfKLE7fiiNtA8=">
+        <field:display field="processId" id="s_org_springsource_roo_loanrequest_server_domain_LoanRequest_processId" object="${loanrequest}" z="xYkjmyNWwCFPFUOA+sUbE7uoMJY="/>
+        <field:display field="customerName" id="s_org_springsource_roo_loanrequest_server_domain_LoanRequest_customerName" object="${loanrequest}" z="LSMZgVmLIgjSHMg2rnef6NZ1gDU="/>
+        <field:display field="amount" id="s_org_springsource_roo_loanrequest_server_domain_LoanRequest_amount" object="${loanrequest}" z="TMhiZU5a+RMFStb2pWQzgb/3EJc="/>
+    </page:show>
+</div>

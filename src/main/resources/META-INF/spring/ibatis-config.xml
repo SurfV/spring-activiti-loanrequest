@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//ibatis.apache.org//DTD SQL MAP CONFIG 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<!-- <description>This configuration file imports the SQL Maps for select 
+	and update queries</description> -->
+
+<sqlMapConfig>
+	<settings useStatementNamespaces="true" />
+	<sqlMap
+		resource="META-INF/spring/ibatis-sqlMap-config.xml" />
+</sqlMapConfig>
