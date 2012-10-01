@@ -56,7 +56,7 @@ import org.springframework.web.context.WebApplicationContext;
 		"classpath:META-INF/spring/applicationContext-security.xml",
 		"classpath:META-INF/spring/applicationContext.xml",
 		"classpath:META-INF/spring/test-datasource-config.xml"})
-public class LoanRequestControllerTests {
+public class LoanRequestControllerTest {
 
 	private static String SEC_CONTEXT_ATTR = HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
