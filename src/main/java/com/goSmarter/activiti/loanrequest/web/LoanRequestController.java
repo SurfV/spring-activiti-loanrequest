@@ -38,8 +38,6 @@ public class LoanRequestController {
 	@Autowired
 	SpringProcessEngineConfiguration processEngineConfiguration;
 
-	private final List<LoanRequest> values = new ArrayList<LoanRequest>();
-
 	private static final String submitterRole = "accountancy";
     private static final String approverRole = "management";
     private static final String submitTaskName = "Submit loan request";
@@ -48,38 +46,24 @@ public class LoanRequestController {
     private static Log logger = LogFactory.getLog(LoanRequestController.class);
 
     public LoanRequestController() {
-		LoanRequest loanRequest = new LoanRequest();
-		loanRequest.setId(1);
-
-		loanRequest.setAmount(25D);
-		loanRequest.setCustomerName("kermit");
-		loanRequest.setProcessId("1");
-		values.add(loanRequest);
-
-		loanRequest = new LoanRequest();
-		loanRequest.setId(2);
-		loanRequest.setAmount(25D);
-		loanRequest.setCustomerName("fozzie");
-		loanRequest.setProcessId("2");
-		values.add(loanRequest);
 	}
 
 	@RequestMapping(value = "loanrequests/list")
 	public String list(Model model) {
 		assertNotNull(ibatisTemplate);
 
-		model.addAttribute("loanRequests", this.values);
+		List<LoanRequest> loanRequests = (List<LoanRequest>) ibatisTemplate.queryForObject("GoSmarter.loanRequestList");
+
+		model.addAttribute("loanRequests", loanRequests);
 		return "view";
 	}
 
 	@RequestMapping(value = "loanrequests/show/{id}", produces = "text/html")
 	public String show(@PathVariable("id") Integer id, Model model) {
-		for (LoanRequest loanRequest : this.values) {
-			if (loanRequest.getId() == id) {
-				model.addAttribute("loanRequest", loanRequest);
-				break;
-			}
-		}
+		
+		LoanRequest loanRequest = (LoanRequest) ibatisTemplate.queryForObject("GoSmarter.loanRequestDetails", id);
+		
+		model.addAttribute("loanRequest", loanRequest);		
 		return "view";
 	}
 
@@ -90,7 +74,7 @@ public class LoanRequestController {
 		// Initiate the BPM modelling of the process
 		String processId = startProcess(loanRequest, httpServletRequest);
 		loanRequest.setProcessId(processId);
-		ibatisTemplate.insert("GoSmater.loanRequestInsert", loanRequest);
+		ibatisTemplate.insert("GoSmarter.loanRequestInsert", loanRequest);
 		return "redirect:/list";
 	}
 
@@ -98,19 +82,11 @@ public class LoanRequestController {
 	public String update(@Valid LoanRequest loanRequest, BindingResult result,
 			Model model) {
 		boolean isFound = false;
-		for (LoanRequest loanRequest1 : this.values) {
-			if (loanRequest.getId() == loanRequest1.getId()) {
-				loanRequest.setCustomerName(loanRequest1.getCustomerName());
-				loanRequest.setAmount(loanRequest1.getAmount());
-				model.addAttribute("status", "ok");
-				isFound = true;
-				break;
-			}
-		}
-		if (!isFound) {
-			model.addAttribute("status", "notok");
-		}
-		// Initiate the BPM modelling of the process
+		
+		ibatisTemplate.update("GoSmarter.loanRequestUpdate", loanRequest);
+		
+		model.addAttribute("status", "ok");
+
 		return "redirect:/list";
 	}
 
@@ -122,9 +98,7 @@ public class LoanRequestController {
 		approveProcess(loanRequest, httpServletRequest);
 		// check for the userrole if user role is not admin return false
 
-		if (!isFound) {
-			model.addAttribute("status", "notok");
-		}
+		model.addAttribute("status", "ok");
 		return "redirect:/list";
 	}
 
@@ -135,9 +109,8 @@ public class LoanRequestController {
 
 		// check if the approval is done only than close it
 		claimAndComplete(loanRequest.getProcessId());
-		if (!isFound) {
-			model.addAttribute("status", "notok");
-		}
+
+		model.addAttribute("status", "ok");
 		return "redirect:/list";
 	}
 

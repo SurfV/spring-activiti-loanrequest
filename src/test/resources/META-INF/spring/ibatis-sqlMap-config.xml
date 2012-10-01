@@ -20,8 +20,17 @@
 		SELECT * FROM LOANREQUEST
 	</select>
 
+	<select id="loanRequestDetails" resultMap="loanRequestResult">
+		SELECT * FROM LOANREQUEST where id=#id#
+	</select>
+
 	<insert id="loanRequestInsert" parameterClass="com.goSmarter.activiti.loanrequest.domain.LoanRequest">
    		insert into contact (id, customerName, amount)
 			values (#id#, #customerName#, #amount#)
 	</insert> 	
+
+
+	<update id="loanRequestUpdate" parameterClass="com.goSmarter.activiti.loanrequest.domain.LoanRequest">
+   		update contact set customerName=#customerName#, amount=#amount# where id=#id#
+	</update> 	
 </sqlMap>

@@ -12,6 +12,8 @@
  */
 package com.goSmarter.activiti.loanrequest.web;
 
+import static com.goSmarter.activiti.loanrequest.web.SecurityRequestPostProcessors.user;
+import static com.goSmarter.activiti.loanrequest.web.SecurityRequestPostProcessors.userDeatilsService;
 import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
@@ -21,23 +23,17 @@ import static org.springframework.test.web.server.result.MockMvcResultMatchers.f
 import static org.springframework.test.web.server.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.server.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.server.result.MockMvcResultMatchers.status;
-import static com.goSmarter.activiti.loanrequest.web.SecurityRequestPostProcessors.user;
-import static com.goSmarter.activiti.loanrequest.web.SecurityRequestPostProcessors.userDeatilsService;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import junit.framework.Assert;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.RuntimeService;
 import org.activiti.engine.identity.User;
 import org.activiti.spring.SpringProcessEngineConfiguration;
-import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,33 +47,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.server.MockMvc;
 import org.springframework.test.web.server.MvcResult;
 import org.springframework.test.web.server.ResultMatcher;
-import org.springframework.test.web.server.request.RequestPostProcessor;
-import org.springframework.test.web.server.samples.context.GenericWebContextLoader;
 import org.springframework.test.web.server.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-/**
- * Basic example that includes Spring Security configuration.
- * 
- * <p>
- * Note that currently there are no {@link ResultMatcher}' built specifically
- * for asserting the Spring Security context. However, it's quite easy to put
- * them together as shown below and Spring Security extensions will become
- * available in the near future.
- * 
- * <p>
- * This also demonstrates a custom {@link RequestPostProcessor} which
- * authenticates a user to a particular {@link HttpServletRequest}.
- * 
- * <p>
- * Also see the Javadoc of {@link GenericWebContextLoader}, a class that
- * provides temporary support for loading WebApplicationContext by extending the
- * TestContext framework.
- * 
- * @author Rob Winch
- * @author Rossen Stoyanchev
- * @see SecurityRequestPostProcessors
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = WebContextLoader.class, value = {
 		"classpath:META-INF/spring/applicationContext-activiti.xml",
@@ -240,9 +212,23 @@ public class LoanRequestControllerTests {
 	}
 
 	@Test
+	public void testApproveForbidden() throws Exception {
+		mockMvc.perform(
+				post("/loanrequestsapproval/approve/2").with(userDeatilsService("fozzie")))
+				.andExpect(status().isForbidden());
+	}
+
+	@Test
 	public void testClose() throws Exception {
 		mockMvc.perform(post("/loanrequestsapproval/close/2").with(userDeatilsService("kermit")))
 				.andExpect(status().isOk()).andExpect(redirectedUrl("/list?status=notok"))
 				.andExpect(model().attribute("loanRequests", any(List.class)));
+	}
+
+	@Test
+	public void testCloseForbidden() throws Exception {
+		mockMvc.perform(
+				post("/loanrequestsapproval/close/2").with(userDeatilsService("fozzie")))
+				.andExpect(status().isForbidden());
 	}
 }
