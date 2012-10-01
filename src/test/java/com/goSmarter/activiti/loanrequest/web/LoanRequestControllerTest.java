@@ -16,6 +16,7 @@ import static com.goSmarter.activiti.loanrequest.web.SecurityRequestPostProcesso
 import static com.goSmarter.activiti.loanrequest.web.SecurityRequestPostProcessors.userDeatilsService;
 import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.springframework.test.web.server.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.server.request.MockMvcRequestBuilders.post;
@@ -172,20 +173,11 @@ public class LoanRequestControllerTest {
 				.andExpect(model().attribute("loanRequests", any(List.class)));
 	}
 
-	@Test
-	public void testSpecificLoanRequest() throws Exception {
-		mockMvc.perform(
-				get("/loanrequests/show/1").with(userDeatilsService("fozzie")))
-				.andExpect(status().isOk())
-				.andExpect(
-						model().attribute("loanRequest",
-								hasProperty("customerName", equalTo("kermit"))));
-	}
 
 	@Test
 	public void testInsert() throws Exception {
 		mockMvc.perform(
-				post("/loanrequests/create").param("id", "3")
+				post("/loanrequests/create").param("id", "1")
 						.param("customerName", "krishna").param("amount", "26")
 						.with(userDeatilsService("fozzie")))
 				.andExpect(status().isOk()).andExpect(redirectedUrl("/list"))
@@ -193,9 +185,36 @@ public class LoanRequestControllerTest {
 	}
 
 	@Test
+	public void testSpecificLoanRequest() throws Exception {
+		mockMvc.perform(
+				post("/loanrequests/create").param("id", "2")
+						.param("customerName", "krishna").param("amount", "26")
+						.with(userDeatilsService("fozzie")))
+				.andExpect(status().isOk()).andExpect(redirectedUrl("/list"))
+				.andExpect(model().attribute("loanRequests", any(List.class)));
+
+		mockMvc.perform(
+				get("/loanrequests/show/2").with(userDeatilsService("fozzie")))
+				.andExpect(status().isOk())
+				.andExpect(
+						model().attribute("loanRequest",
+								hasProperty("customerName", equalTo("krishna"))))
+				.andExpect(
+						model().attribute("loanRequest",
+								hasProperty("processId", notNullValue())));
+	}
+
+	@Test
 	public void testUpdate() throws Exception {
 		mockMvc.perform(
-				post("/loanrequests/update/2").param("id", "2")
+				post("/loanrequests/create").param("id", "3")
+						.param("customerName", "krishna").param("amount", "26")
+						.with(userDeatilsService("fozzie")))
+				.andExpect(status().isOk()).andExpect(redirectedUrl("/list"))
+				.andExpect(model().attribute("loanRequests", any(List.class)));
+
+		mockMvc.perform(
+				post("/loanrequests/update").param("id", "3")
 						.param("customerName", "krishna1")
 						.param("amount", "27").with(userDeatilsService("fozzie"))).andExpect(status().isOk())
 				.andExpect(redirectedUrl("/list?status=ok"))
@@ -205,30 +224,22 @@ public class LoanRequestControllerTest {
 	@Test
 	public void testApprove() throws Exception {
 		mockMvc.perform(
-				post("/loanrequestsapproval/approve/2").param("id", "3")
-						.param("customerName", "krishna").param("amount", "26").with(userDeatilsService("kermit")))
-				.andExpect(status().isOk())
+				post("/loanrequests/create").param("id", "4")
+						.param("customerName", "krishna").param("amount", "26")
+						.with(userDeatilsService("fozzie")))
+				.andExpect(status().isOk()).andExpect(redirectedUrl("/list"))
 				.andExpect(model().attribute("loanRequests", any(List.class)));
+
+		mockMvc.perform(
+				get("/loanrequestsapproval/approve/4").with(userDeatilsService("kermit")))
+				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void testApproveForbidden() throws Exception {
 		mockMvc.perform(
-				post("/loanrequestsapproval/approve/2").with(userDeatilsService("fozzie")))
+				get("/loanrequestsapproval/approve/2").with(userDeatilsService("fozzie")))
 				.andExpect(status().isForbidden());
 	}
 
-	@Test
-	public void testClose() throws Exception {
-		mockMvc.perform(post("/loanrequestsapproval/close/2").with(userDeatilsService("kermit")))
-				.andExpect(status().isOk()).andExpect(redirectedUrl("/list?status=notok"))
-				.andExpect(model().attribute("loanRequests", any(List.class)));
-	}
-
-	@Test
-	public void testCloseForbidden() throws Exception {
-		mockMvc.perform(
-				post("/loanrequestsapproval/close/2").with(userDeatilsService("fozzie")))
-				.andExpect(status().isForbidden());
-	}
 }

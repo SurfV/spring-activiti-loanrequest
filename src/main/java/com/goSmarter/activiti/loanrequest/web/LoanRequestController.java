@@ -78,7 +78,7 @@ public class LoanRequestController {
 		return "redirect:/list";
 	}
 
-	@RequestMapping(value = "loanrequests/update/{id}", method = RequestMethod.POST)
+	@RequestMapping(value = "loanrequests/update", method = RequestMethod.POST)
 	public String update(@Valid LoanRequest loanRequest, BindingResult result,
 			Model model) {
 		boolean isFound = false;
@@ -90,25 +90,14 @@ public class LoanRequestController {
 		return "redirect:/list";
 	}
 
-	@RequestMapping(value = "loanrequestsapproval/approve/{id}", method = RequestMethod.POST)
-	public String approve(@Valid LoanRequest loanRequest, BindingResult result,
-			Model model, HttpServletRequest httpServletRequest) {
+	@RequestMapping(value = "loanrequestsapproval/approve/{id}")
+	public String approve(@PathVariable("id") Integer id, Model model, HttpServletRequest httpServletRequest) {
 		boolean isFound = false;
+
+		LoanRequest loanRequest = (LoanRequest) ibatisTemplate.queryForObject("GoSmarter.loanRequestDetails", id);
 
 		approveProcess(loanRequest, httpServletRequest);
 		// check for the userrole if user role is not admin return false
-
-		model.addAttribute("status", "ok");
-		return "redirect:/list";
-	}
-
-	@RequestMapping(value = "loanrequestsapproval/close/{id}", method = RequestMethod.POST)
-	public String close(@Valid LoanRequest loanRequest, BindingResult result,
-			Model model) {
-		boolean isFound = false;
-
-		// check if the approval is done only than close it
-		claimAndComplete(loanRequest.getProcessId());
 
 		model.addAttribute("status", "ok");
 		return "redirect:/list";
@@ -133,14 +122,14 @@ public class LoanRequestController {
 	private ProcessEngine processEngine = null;
 	private RuntimeService getRuntimeService() {
 		if(processEngine == null){
-			processEngineConfiguration.buildProcessEngine();
+			processEngine = processEngineConfiguration.buildProcessEngine();
 		}
 		return processEngine.getRuntimeService();
 	}
 
 	private TaskService getTaskService() {
 		if(processEngine == null){
-			processEngineConfiguration.buildProcessEngine();
+			processEngine = processEngineConfiguration.buildProcessEngine();
 		}
 		return processEngine.getTaskService();
 	}

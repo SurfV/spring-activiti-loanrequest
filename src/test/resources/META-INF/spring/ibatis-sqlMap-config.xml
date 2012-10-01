@@ -25,12 +25,12 @@
 	</select>
 
 	<insert id="loanRequestInsert" parameterClass="com.goSmarter.activiti.loanrequest.domain.LoanRequest">
-   		insert into contact (id, customerName, amount)
-			values (#id#, #customerName#, #amount#)
+   		insert into LOANREQUEST (id, customerName, amount, processId)
+			values (#id#, #customerName#, #amount#, #processId#)
 	</insert> 	
 
 
 	<update id="loanRequestUpdate" parameterClass="com.goSmarter.activiti.loanrequest.domain.LoanRequest">
-   		update contact set customerName=#customerName#, amount=#amount# where id=#id#
+   		update LOANREQUEST set customerName=#customerName#, amount=#amount# where id=#id#
 	</update> 	
 </sqlMap>
